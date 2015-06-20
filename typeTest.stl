@@ -1,0 +1,74 @@
+solid typeTest 
+    facet normal 0.0e+00 -1.0e+00 0.0e+00
+        outer loop
+            vertex 0.0e+00 0.0e+00 0.0e+00
+            vertex 5.0e+01 0.0e+00 0.0e+00
+            vertex 5.0e+01 0.0e+00 5.0e+01
+        endloop
+    facet normal 0.0e+00 -1.0e+00 0.0e+00
+        outer loop
+            vertex 0.0e+00 0.0e+00 0.0e+00
+            vertex 5.0e+01 0.0e+00 5.0e+01
+            vertex 0.0e+00 0.0e+00 5.0e+01
+        endloop
+    facet normal 0.0e+00 0.0e+00 -1.0e+00
+        outer loop
+            vertex 0.0e+00 0.0e+00 0.0e+00
+            vertex 5.0e+01 0.0e+00 0.0e+00
+            vertex 5.0e+01 5.0e+01 0.0e+00
+        endloop
+    facet normal 0.0e+00 0.0e+00 -1.0e+00
+        outer loop
+            vertex 0.0e+00 0.0e+00 0.0e+00
+            vertex 5.0e+01 5.0e+01 0.0e+00
+            vertex 0.0e+00 5.0e+01 0.0e+00
+        endloop
+    facet normal -1.0e+00 0.0e+00 0.0e+00
+        outer loop
+            vertex 0.0e+00 0.0e+00 0.0e+00
+            vertex 0.0e+00 5.0e+01 0.0e+00
+            vertex 0.0e+00 5.0e+01 5.0e+01
+        endloop
+    facet normal -1.0e+00 0.0e+00 0.0e+00
+        outer loop
+            vertex 0.0e+00 0.0e+00 0.0e+00
+            vertex 0.0e+00 5.0e+01 5.0e+01
+            vertex 0.0e+00 0.0e+00 5.0e+01
+        endloop
+    facet normal 0.0e+00 0.0e+00 1.0e+00
+        outer loop
+            vertex 0.0e+00 0.0e+00 5.0e+01
+            vertex 5.0e+01 0.0e+00 5.0e+01
+            vertex 5.0e+01 5.0e+01 5.0e+01
+        endloop
+    facet normal 0.0e+00 0.0e+00 1.0e+00
+        outer loop
+            vertex 0.0e+00 0.0e+00 5.0e+01
+            vertex 5.0e+01 5.0e+01 5.0e+01
+            vertex 0.0e+00 5.0e+01 5.0e+01
+        endloop
+    facet normal 0.0e+00 1.0e+00 0.0e+00
+        outer loop
+            vertex 0.0e+00 5.0e+01 0.0e+00
+            vertex 5.0e+01 5.0e+01 0.0e+00
+            vertex 5.0e+01 5.0e+01 5.0e+01
+        endloop
+    facet normal 0.0e+00 1.0e+00 0.0e+00
+        outer loop
+            vertex 0.0e+00 5.0e+01 0.0e+00
+            vertex 5.0e+01 5.0e+01 5.0e+01
+            vertex 0.0e+00 5.0e+01 5.0e+01
+        endloop
+    facet normal 1.0e+00 0.0e+00 0.0e+00
+        outer loop
+            vertex 5.0e+01 0.0e+00 0.0e+00
+            vertex 5.0e+01 5.0e+01 0.0e+00
+            vertex 5.0e+01 5.0e+01 5.0e+01
+        endloop
+    facet normal 1.0e+00 0.0e+00 0.0e+00
+        outer loop
+            vertex 5.0e+01 0.0e+00 0.0e+00
+            vertex 5.0e+01 5.0e+01 5.0e+01
+            vertex 5.0e+01 0.0e+00 5.0e+01
+        endloop
+endsolid

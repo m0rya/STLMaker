@@ -10,7 +10,10 @@ void setup() {
 
 void draw() {
   // maker.cube(40);
-  maker.cylinder(20, 20, 60);
+  //maker.cylinder(20, 20, 10);
+  // maker.cone(20,20,10);
+  maker.rectSolid(10,20,30);
+
 
 
   output.flush();

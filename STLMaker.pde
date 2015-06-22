@@ -1,4 +1,5 @@
-class Mesher {
+sclass Mesher {
+
   PrintWriter writer;
   String tab = "    ";  //3 spaces
 
@@ -125,8 +126,8 @@ class Mesher {
 
 
   //=====Object=======
-  
-  
+
+
   ////Cylynder Object
   void cylinder(int radius, int h, int rsl) {
 
@@ -138,9 +139,6 @@ class Mesher {
     String mns = "-1.000000E+00";
     String cylBottom = double2e(0.0);
     String cylTop    = double2e(h);
-
-
-
 
 
     for (int i=0; i<360/rsl + 1; i++) {
@@ -253,5 +251,119 @@ class Mesher {
 
     output.println("endsolid");
   }
+
+
+  //Cone Object
+  void cone(int radius, int h, int rsl) {
+    //variable
+    double cone_data[][] = new double[360/rsl + 1][2];
+    String coneData[][] = new String[360/rsl + 1][2];
+    String zero = "0.000000E+00";
+    String plus = "1.000000E+00";
+    String mns = "-1.000000E+00";
+    // String coneTop = int2e(h);
+    String coneTop = double2e(h);
+
+    for (int i=0; i<360/rsl +1; i++) {
+      if (i*rsl == 180) {
+        cone_data[i][0] = 0.0;
+      } else {
+        cone_data[i][0] = sin(radians(i*rsl)) * radius;
+      }
+
+      if (i*rsl == 90 || i*rsl == 270) {
+        cone_data[i][1] = 0.0;
+      } else {
+        cone_data[i][1] = cos(radians(i*rsl)) * radius;
+      }
+
+      coneData[i][0] = double2e(cone_data[i][0]);
+      coneData[i][1] = double2e(cone_data[i][1]);
+    }
+
+    //Bottom Mesh
+    for (int i=0; i<360/rsl; i++) {
+      facet(output, zero, zero, mns);
+      vertex3(output, zero, zero, zero, coneData[i][0], coneData[i][1], zero, coneData[i+1][0], coneData[i+1][1], zero);
+    }
+
+    //Side Mesh
+    for (int i=0; i<360/rsl; i++) {
+
+      PVector vtxx[] = new PVector[3];
+      vtxx[0] = new PVector(int(coneData[i][0]), int(coneData[i][1]), int(zero));
+      vtxx[1] = new PVector(int(coneData[i+1][0]), int(coneData[i+1][1]), int(zero));
+      vtxx[2] = new PVector(int(zero), int(zero), int(coneTop));
+
+      PVector nor = normalVec(vtxx[0], vtxx[1], vtxx[2]);
+
+      String nml[] = new String[3];
+      nml[0] = str(nor.x);
+      nml[1] = str(nor.y);
+      nml[2] = str(nor.z);
+
+      facet(output, nml[0], nml[1], nml[2]);
+      vertex3(output, coneData[i][0], coneData[i][1], zero, coneData[i+1][0], coneData[i+1][1], zero, zero, zero, coneTop);
+    }
+
+    output.println("endsolid");
+  }
+
+  //Rectangular Solid
+  void rectSolid(int w, int d, int h) {
+    String W = double2e(w);
+    String D = double2e(d);
+    String H = double2e(h);
+    String zero = "0.000000E+00";
+    String pls = "1.000000E+00";
+    String mns = "-1.000000E+00";
+
+
+    facet(output, zero, zero, mns);
+    vertex3(output, zero, zero, zero, W, zero, zero, zero, D, zero);
+    facet(output, zero, zero, mns);
+    vertex3(output, zero, D, zero, W, zero, zero, W, D, zero);
+
+
+    facet(output, zero, zero, pls);
+    vertex3(output, zero, zero, H, W, zero, H, W, D, H);
+    facet(output, zero, zero, pls);
+    vertex3(output, zero, zero, H, W, D, H, zero, D, H);
+
+    facet(output, zero, mns, zero);
+    vertex3(output, zero, zero, zero, W, zero, zero, zero, zero, H);
+    facet(output, zero, mns, zero);
+    vertex3(output, zero, zero, H, W, zero, zero, W, zero, H); 
+
+    facet(output, zero, pls, zero);
+    vertex3(output, zero, D, zero, W, D, zero, W, D, H);
+    facet(output, zero, pls, zero);
+    vertex3(output, zero, D, zero, W, D, H, zero, D, H);
+
+    facet(output, mns, zero, zero);
+    vertex3(output, zero, zero, zero, zero, D, zero, zero, zero, H);
+    facet(output, mns, zero, zero);
+    vertex3(output, zero, zero, H, zero, D, zero, zero, D, H);
+
+    facet(output, pls, zero, zero);
+    vertex3(output, W, zero, zero, W, D, zero, W, D, H);
+    facet(output, pls, zero, zero);
+    vertex3(output, W, zero, zero, W, D, H, W, zero, H);
+
+    output.println("endsolid");
+  }
+
+
+
+
+
+
+
+  //Trigonal Pyramid
+
+
+
+  //Sphere
+  //
 }
 

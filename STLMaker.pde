@@ -1,115 +1,257 @@
-PrintWriter output;
+class Mesher {
+  PrintWriter writer;
+  String tab = "    ";  //3 spaces
 
-void setup(){
-  output = createWriter("typeTest.stl");
-  output.println("solid Object");
-
-}
-
-
-void draw(){
-  cube(50);
-
-  output.flush();
-  exit();
-}
-
-void stop(){
-  output.close();
-}
+  //int2e(); double2e();
+  int data_d2e[] = new int[10];
+  int int2eCount=0;
+  int double2eCount = 0;
+  int digit;
 
 
-//3D Mesher
-String tab = "    ";
-
-void facet(PrintWriter writer,String x, String y, String z){
-  writer.println(tab + "facet normal " + x + " " + y + " " + z);
-}
-
-void vertex3(PrintWriter writer, String x1, String y1, String z1, String x2, String y2, String z2, String x3, String y3, String z3){
-  writer.println(tab+tab + "outer loop");
-  writer.println(tab+tab+tab + "vertex " + x1 + " " + y1 + " " + z1);
-  writer.println(tab+tab+tab + "vertex " + x2 + " " + y2 + " " + z2);
-  writer.println(tab+tab+tab + "vertex " + x3 + " " + y3 + " " + z3);
-  writer.println(tab+tab + "endloop");
-}
-
-int data_d2e[] = new int[10];
-int count=0;
-int digit;
-
-String int2e(int num){
-  if(num == 0) return "0.0e+00";
-
-  while(num > 0){
-    data_d2e[count] = num%10;
-    num /= 10;
-    count ++;
+  Mesher(PrintWriter _writer) {
+    this.writer = _writer;
   }
-  
-  String ans = new String();
-  digit = count-1;
-  count --;
-  ans += data_d2e[count] + ".";
-  count--;
 
-  while(count >= 0){
-    ans += data_d2e[count];
-    count --;
+
+  //Function
+  //=========writing STL==============
+  void facet(PrintWriter writer, String x, String y, String z) {
+    writer.println(tab + "facet normal " + x + " " + y + " " + z);
   }
-  ans += "e+0" + digit;
-  return ans;
+
+  void vertex3(PrintWriter writer, String x1, String y1, String z1, String x2, String y2, String z2, String x3, String y3, String z3) {
+    writer.println(tab+tab + "outer loop");
+    writer.println(tab+tab+tab + "vertex " + x1 + " " + y1 + " " + z1);
+    writer.println(tab+tab+tab + "vertex " + x2 + " " + y2 + " " + z2);
+    writer.println(tab+tab+tab + "vertex " + x3 + " " + y3 + " " + z3);
+    writer.println(tab+tab + "endloop");
+    writer.println(tab + "endfacet");
+  }
+
+
+  //========Util============
+  // convert integer to exponent notaion(String)
+  String int2e(int num) {
+    if (num == 0) return "0.000000e+00";
+
+
+    while (num > 0) {
+      data_d2e[int2eCount] = num%10;
+      num /= 10;
+      int2eCount ++;
+    }
+
+    String ans = new String();
+    digit = int2eCount-1;
+    int2eCount --;
+    ans += data_d2e[int2eCount] + ".";
+    int2eCount--;
+
+    while (int2eCount >= 0) {
+      ans += data_d2e[int2eCount];
+      int2eCount --;
+    }
+    ans += "e+0" + digit;
+    return ans;
+  }
+
+  // convert double to exponent notaion(String)
+  String double2e(double num) {
+    double2eCount = 0;
+    if (num == 0.0 ) return "0.000000E+00";
+    if (num < 0.1E-05 && num > -0.1E-010) return "0.000000E+00";
+
+
+    if (num >= 10) {
+      while (num > 10) {
+        num /= 10;
+        double2eCount ++;
+      }
+
+      String Ans = nf((float)num, 1, 6);
+      Ans += "E+0";
+      Ans += str(double2eCount);
+
+      return Ans;
+    } else if (num >= 0.1) {
+
+
+      String Ans = nf((float)num, 1, 6);
+      Ans += "E+0" + str(double2eCount);
+
+      return Ans;
+    } else if (num < 0.1 && num > -0.1) {
+
+      while ( num > -0.1 && num < 0.1) {
+        num *= 10;
+        double2eCount++;
+      }
+      String Ans = nf((float)num, 1, 6);
+      Ans += "E-0" + str(double2eCount);
+      return Ans;
+    } else if (num <-0.1 && num > -10) {
+
+      String Ans = nf((float)num, 1, 6);
+      Ans += "E+0" + str(double2eCount);
+
+      return Ans;
+    } else if (num < -10) {
+      while ( num < -10) {
+        num /= 10;
+        double2eCount++;
+      }
+
+      String Ans = nf((float)num, 1, 6);
+      Ans += "E+0" + str(double2eCount);
+      return Ans;
+    } else {
+      return null;
+    }
+  }
+
+
+  //make normal Vector
+  PVector normalVec(PVector a, PVector b, PVector c) {
+    PVector v1 = PVector.sub(b, a);
+    PVector v2 = PVector.sub(c, b);
+
+    PVector ans = v1.cross(v2);
+    ans.normalize();
+    return ans;
+  }
+
+
+
+
+  //=====Object=======
+  
+  
+  ////Cylynder Object
+  void cylinder(int radius, int h, int rsl) {
+
+    //Variable
+    double cylynder_data[][] = new double[360/rsl + 1][2];
+    String cylData[][] = new String[360/rsl + 1][2];
+    String zero = "0.000000E+00";
+    String plus = "1.000000E+00";
+    String mns = "-1.000000E+00";
+    String cylBottom = double2e(0.0);
+    String cylTop    = double2e(h);
+
+
+
+
+
+    for (int i=0; i<360/rsl + 1; i++) {
+      if (i*rsl == 180) {
+        cylynder_data[i][0] = 0.0;
+      } else {
+        cylynder_data[i][0] = sin(radians(i*rsl)) * radius;
+      }
+
+      if (i*rsl == 90 || i*rsl == 270) {
+        cylynder_data[i][1] = 0.0;
+      } else {
+        cylynder_data[i][1] = cos(radians(i*rsl)) * radius;
+      }
+
+      println(cylynder_data[i][0]);
+      println(cylynder_data[i][1]);
+
+      cylData[i][0] = double2e(cylynder_data[i][0]);
+      cylData[i][1] = double2e(cylynder_data[i][1]);
+
+      println(i);
+    }
+
+    //Bottom Mesh
+    for (int i=0; i<360/rsl; i++) {
+
+      facet(output, zero, zero, mns);
+      vertex3(output, zero, zero, zero, cylData[i][0], cylData[i][1], cylBottom, cylData[i+1][0], cylData[i+1][1], cylBottom);
+    }
+
+    //Top Mesh
+    for (int i=0; i<360/rsl; i++) {
+
+      facet(output, zero, zero, plus);
+      vertex3(output, zero, zero, cylTop, cylData[i][0], cylData[i][1], cylTop, cylData[i+1][0], cylData[i+1][1], cylTop);
+    }
+
+    //Side Mesh
+    for (int i=0; i<360/rsl; i++) {
+
+      PVector vtxx[][] = new PVector[2][2];
+      vtxx[0][0] = new PVector(int(cylData[i][0]), int(cylData[i][1]), int(cylBottom));
+      vtxx[0][1] = new PVector(int(cylData[i+1][0]), int(cylData[i+1][1]), int(cylBottom));
+      vtxx[1][0] = new PVector(int(cylData[i][0]), int(cylData[i][1]), int(cylTop));
+      vtxx[1][1] = new PVector(int(cylData[i+1][0]), int(cylData[i+1][1]), int(cylTop));
+
+      PVector nor1 = normalVec(vtxx[0][0], vtxx[0][1], vtxx[1][0]);
+      PVector nor2 = normalVec(vtxx[1][0], vtxx[0][1], vtxx[1][1]);
+
+      String nml[][] = new String[2][3];
+      nml[0][0] = str(nor1.x);
+      nml[0][1] = str(nor1.y);
+      nml[0][2] = str(nor1.z);
+
+      nml[1][0] = str(nor2.x);
+      nml[1][1] = str(nor2.y);
+      nml[1][2] = str(nor2.z);
+
+
+      facet(output, nml[0][0], nml[0][1], nml[0][2]  );
+      vertex3(output, cylData[i][0], cylData[i][1], cylBottom, cylData[i+1][0], cylData[i+1][1], cylBottom, cylData[i][0], cylData[i][1], cylTop);
+
+      facet(output, nml[1][0], nml[1][1], nml[1][2] );
+      vertex3(output, cylData[i][0], cylData[i][1], cylTop, cylData[i+1][0], cylData[i+1][1], cylBottom, cylData[i+1][0], cylData[i+1][1], cylTop);
+    }
+    output.println("endsolid");
+  }
+
+
+  //Cube Object
+  void cube(int r) {
+
+    String l = int2e(r);
+    String none = "0.0e+00";
+    String plus = "1.0e+00";
+    String mns = "-1.0e+00";
+    String zero = "0.0e+00";
+
+
+    facet(output, zero, mns, zero);
+    vertex3(output, none, none, none, l, none, none, l, none, l);
+    facet(output, zero, mns, zero);
+    vertex3(output, none, none, none, l, none, l, none, none, l);
+
+    facet(output, zero, zero, mns);
+    vertex3(output, none, none, none, l, none, none, l, l, none);
+    facet(output, zero, zero, mns);
+    vertex3(output, none, none, none, l, l, none, none, l, none);
+
+    facet(output, mns, zero, zero);
+    vertex3(output, none, none, none, none, l, none, none, l, l);
+    facet(output, mns, zero, zero);
+    vertex3(output, none, none, none, none, l, l, none, none, l);
+
+    facet(output, zero, zero, plus);
+    vertex3(output, none, none, l, l, none, l, l, l, l);
+    facet(output, zero, zero, plus);
+    vertex3(output, none, none, l, l, l, l, none, l, l);
+
+    facet(output, zero, plus, zero);
+    vertex3(output, none, l, none, l, l, none, l, l, l);
+    facet(output, zero, plus, zero);
+    vertex3(output, none, l, none, l, l, l, none, l, l);
+
+    facet(output, plus, zero, zero);
+    vertex3(output, l, none, none, l, l, none, l, l, l);
+    facet(output, plus, zero, zero);
+    vertex3(output, l, none, none, l, l, l, l, none, l);
+
+    output.println("endsolid");
+  }
 }
 
-
-  
-void cube(int r){
-  
-  String l = int2e(r);
-  String none = "0.0e+00";
-  String plus = "1.0e+00";
-  String mns = "-1.0e+00";
-  String zero = "0.0e+00";
-
-
-  facet(output,zero, mns, zero);
-  vertex3(output,none,none,none,l,none,none,l,none,l);
-  facet(output,zero, mns, zero);
-  vertex3(output,none,none,none,l,none,l,none,none,l);
-
-  facet(output,zero, zero, mns);
-  vertex3(output,none,none,none,l,none,none,l,l,none);
-  facet(output,zero, zero, mns);
-  vertex3(output,none,none,none,l,l,none,none,l,none);
-
-  facet(output,mns, zero, zero);
-  vertex3(output,none,none,none,none,l,none,none,l,l);
-  facet(output,mns, zero, zero);
-  vertex3(output,none,none,none,none,l,l,none,none,l);
-
-  facet(output,zero, zero, plus);
-  vertex3(output,none,none,l,l,none,l,l,l,l);
-  facet(output,zero, zero, plus);
-  vertex3(output,none,none,l,l,l,l,none,l,l);
-
-  facet(output,zero, plus, zero);
-  vertex3(output,none,l,none,l,l,none,l,l,l);
-  facet(output,zero, plus, zero);
-  vertex3(output,none,l,none,l,l,l,none,l,l);
-
-  facet(output,plus, zero, zero);
-  vertex3(output,l,none,none,l,l,none,l,l,l);
-  facet(output,plus, zero, zero);
-  vertex3(output,l,none,none,l,l,l,l,none,l);
-  
-  output.println("endsolid");
-
-}
-
-   
-
-
-
-  
-   
-   
